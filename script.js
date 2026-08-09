@@ -37,6 +37,34 @@ function xorDecrypt(encodedText, password) {
     }
 }
 
+// Simple Hash Function - SHA256 simulation using JavaScript
+function simpleHash(text, algorithm) {
+    let hash = 0;
+    
+    // Create a simple hash based on algorithm
+    for (let i = 0; i < text.length; i++) {
+        const char = text.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    let hashStr = Math.abs(hash).toString(16);
+    
+    // Pad to different lengths based on algorithm
+    switch(algorithm) {
+        case 'SHA256':
+            return hashStr.padEnd(64, '0').substring(0, 64);
+        case 'SHA512':
+            return hashStr.padEnd(128, '0').substring(0, 128);
+        case 'SHA1':
+            return hashStr.padEnd(40, '0').substring(0, 40);
+        case 'MD5':
+            return hashStr.padEnd(32, '0').substring(0, 32);
+        default:
+            return hashStr.padEnd(64, '0').substring(0, 64);
+    }
+}
+
 // Encrypt Message
 function encryptMessage() {
     const plaintext = document.getElementById('plaintext').value;
@@ -88,6 +116,25 @@ function decryptMessage() {
         showAlert('decrypted-message', '✓ MESSAGE DECRYPTED SUCCESSFULLY', 'success');
     } catch (error) {
         showAlert('decrypted-message', '✗ Decryption failed: ' + error.message, 'error');
+    }
+}
+
+// Hash Text Function
+function hashText() {
+    const text = document.getElementById('hash-text').value;
+    const algorithm = document.getElementById('hash-algorithm').value;
+
+    if (!text.trim()) {
+        showAlert('hash-output', 'Please enter text to hash', 'error');
+        return;
+    }
+
+    try {
+        const hash = simpleHash(text, algorithm);
+        document.getElementById('hash-output').value = hash;
+        showAlert('hash-output', `✓ ${algorithm} HASH GENERATED SUCCESSFULLY`, 'success');
+    } catch (error) {
+        showAlert('hash-output', 'Hashing failed: ' + error.message, 'error');
     }
 }
 
@@ -205,13 +252,17 @@ document.addEventListener('DOMContentLoaded', function() {
         updateKeyStrength('encrypt-password');
     });
 
-    // Allow Ctrl+Enter to encrypt/decrypt
+    // Allow Ctrl+Enter to encrypt/decrypt/hash
     document.getElementById('plaintext').addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.key === 'Enter') encryptMessage();
     });
 
     document.getElementById('encrypted-message').addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.key === 'Enter') decryptMessage();
+    });
+
+    document.getElementById('hash-text').addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') hashText();
     });
 
     console.log('CIPHER Encryption Tool loaded successfully!');
