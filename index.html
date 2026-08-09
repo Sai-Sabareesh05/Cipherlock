@@ -25,6 +25,43 @@
             background: #2a2a2a;
             border: 3px solid #333;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #ffcc00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #d9534f;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            border: 2px solid #d9534f;
+        }
+
+        .developer-name {
+            font-size: 0.75em;
+            color: #00d4ff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
         }
 
         /* Header Section */
@@ -75,12 +112,6 @@
             text-transform: uppercase;
             border: 2px solid #000;
             margin-bottom: 20px;
-        }
-
-        .banner-small {
-            font-size: 0.75em;
-            margin-top: 8px;
-            line-height: 1.4;
         }
 
         /* Film Strip */
@@ -156,6 +187,103 @@
         /* Main Content */
         .main-content {
             padding: 30px;
+        }
+
+        /* Animation Container */
+        .animation-container {
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animation-container.hidden {
+            display: none;
+        }
+
+        /* Lock Animation */
+        .lock-icon {
+            font-size: 3em;
+            margin: 0 10px;
+        }
+
+        @keyframes lock {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(-5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes unlock {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .lock-icon.locking {
+            animation: lock 0.6s ease-in-out infinite;
+            color: #ff6666;
+        }
+
+        .lock-icon.unlocking {
+            animation: unlock 0.6s ease-in-out infinite;
+            color: #00ff88;
+        }
+
+        /* Hash Blink Animation */
+        .hash-icons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .hash-icon {
+            font-size: 2em;
+            color: #00d4ff;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .hash-icon.hashing {
+            animation: blink 0.8s ease-in-out infinite;
+        }
+
+        .hash-icon.hashing:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .hash-icon.hashing:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Status Text */
+        .status-text {
+            color: #00d4ff;
+            font-size: 0.9em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         /* Tabs */
@@ -359,13 +487,18 @@
             box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: linear-gradient(135deg, #00ffff 0%, #00ccff 100%);
             box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
             transform: translateY(-2px);
         }
 
-        .btn-primary:active {
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary:active:not(:disabled) {
             transform: translateY(0);
         }
 
@@ -431,6 +564,21 @@
 
         /* Responsive Design */
         @media (max-width: 600px) {
+            .logo-section {
+                top: 10px;
+                right: 10px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+
+            .developer-name {
+                font-size: 0.65em;
+            }
+
             .title {
                 font-size: 2em;
                 letter-spacing: 4px;
@@ -450,6 +598,7 @@
 
             .main-content {
                 padding: 15px;
+                margin-top: 80px;
             }
 
             .btn-primary,
@@ -472,6 +621,12 @@
 </head>
 <body>
     <div class="container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo">🔐</div>
+            <div class="developer-name">Sai Sabareesh</div>
+        </div>
+
         <!-- Header -->
         <div class="header">
             <div class="header-top">
@@ -512,6 +667,9 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Animation Container -->
+            <div id="animationContainer" class="animation-container hidden"></div>
+
             <!-- Tab Navigation -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('encrypt', this)">🔒 ENCRYPT</button>
@@ -537,7 +695,7 @@
                     </div>
                 </div>
 
-                <button class="btn-primary" onclick="encryptMessage()">ENCRYPT MESSAGE</button>
+                <button class="btn-primary" id="encryptBtn" onclick="encryptMessage()">ENCRYPT MESSAGE</button>
 
                 <div class="form-group output-group">
                     <label for="ciphertext">ENCRYPTED OUTPUT:</label>
@@ -560,7 +718,7 @@
                     <input type="password" id="decrypt-password" placeholder="Enter the same encryption key">
                 </div>
 
-                <button class="btn-primary" onclick="decryptMessage()">DECRYPT MESSAGE</button>
+                <button class="btn-primary" id="decryptBtn" onclick="decryptMessage()">DECRYPT MESSAGE</button>
 
                 <div class="form-group output-group">
                     <label for="decrypted-message">DECRYPTED OUTPUT:</label>
@@ -588,7 +746,7 @@
                     </select>
                 </div>
 
-                <button class="btn-primary" onclick="hashText()">GENERATE HASH</button>
+                <button class="btn-primary" id="hashBtn" onclick="hashText()">GENERATE HASH</button>
 
                 <div class="form-group output-group">
                     <label for="hash-output">HASH OUTPUT:</label>
