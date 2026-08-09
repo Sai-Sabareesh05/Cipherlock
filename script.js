@@ -80,13 +80,22 @@ function encryptMessage() {
         return;
     }
 
-    try {
-        const encrypted = xorEncrypt(plaintext, password);
-        document.getElementById('ciphertext').value = encrypted;
-        showAlert('ciphertext', '✓ MESSAGE ENCRYPTED SUCCESSFULLY', 'success');
-    } catch (error) {
-        showAlert('ciphertext', 'Encryption failed: ' + error.message, 'error');
-    }
+    // Show animation while encrypting
+    showAnimation('encrypt');
+
+    // Simulate a short animation duration then perform encryption (keeps UI responsive)
+    setTimeout(() => {
+        try {
+            const encrypted = xorEncrypt(plaintext, password);
+            document.getElementById('ciphertext').value = encrypted;
+            showAlert('ciphertext', '✓ MESSAGE ENCRYPTED SUCCESSFULLY', 'success');
+        } catch (error) {
+            showAlert('ciphertext', 'Encryption failed: ' + error.message, 'error');
+        } finally {
+            // Hide animation shortly after operation finishes
+            setTimeout(hideAnimation, 600);
+        }
+    }, 300);
 }
 
 // Decrypt Message
@@ -104,19 +113,26 @@ function decryptMessage() {
         return;
     }
 
-    try {
-        const decrypted = xorDecrypt(ciphertext, password);
-        
-        if (!decrypted) {
-            showAlert('decrypted-message', 'Decryption failed - incorrect key or invalid data', 'error');
-            return;
-        }
+    // Show unlock animation while decrypting
+    showAnimation('decrypt');
 
-        document.getElementById('decrypted-message').value = decrypted;
-        showAlert('decrypted-message', '✓ MESSAGE DECRYPTED SUCCESSFULLY', 'success');
-    } catch (error) {
-        showAlert('decrypted-message', '✗ Decryption failed: ' + error.message, 'error');
-    }
+    setTimeout(() => {
+        try {
+            const decrypted = xorDecrypt(ciphertext, password);
+            
+            if (!decrypted) {
+                showAlert('decrypted-message', 'Decryption failed - incorrect key or invalid data', 'error');
+                return;
+            }
+
+            document.getElementById('decrypted-message').value = decrypted;
+            showAlert('decrypted-message', '✓ MESSAGE DECRYPTED SUCCESSFULLY', 'success');
+        } catch (error) {
+            showAlert('decrypted-message', '✗ Decryption failed: ' + error.message, 'error');
+        } finally {
+            setTimeout(hideAnimation, 600);
+        }
+    }, 300);
 }
 
 // Hash Text Function
@@ -129,13 +145,20 @@ function hashText() {
         return;
     }
 
-    try {
-        const hash = simpleHash(text, algorithm);
-        document.getElementById('hash-output').value = hash;
-        showAlert('hash-output', `✓ ${algorithm} HASH GENERATED SUCCESSFULLY`, 'success');
-    } catch (error) {
-        showAlert('hash-output', 'Hashing failed: ' + error.message, 'error');
-    }
+    // Show hashing animation
+    showAnimation('hash');
+
+    setTimeout(() => {
+        try {
+            const hash = simpleHash(text, algorithm);
+            document.getElementById('hash-output').value = hash;
+            showAlert('hash-output', `✓ ${algorithm} HASH GENERATED SUCCESSFULLY`, 'success');
+        } catch (error) {
+            showAlert('hash-output', 'Hashing failed: ' + error.message, 'error');
+        } finally {
+            setTimeout(hideAnimation, 600);
+        }
+    }, 300);
 }
 
 // Switch Tabs
@@ -244,6 +267,60 @@ function updateKeyStrength(elementId) {
     }
 
     strengthText.textContent = strengthLevel;
+}
+
+// Animation helpers: show/hide the animation container and populate it with animated elements
+function showAnimation(type) {
+    const container = document.getElementById('animationContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    container.classList.remove('hidden');
+
+    if (type === 'encrypt') {
+        const icon = document.createElement('div');
+        icon.className = 'lock-icon locking';
+        icon.textContent = '🔒';
+        container.appendChild(icon);
+
+        const status = document.createElement('div');
+        status.className = 'status-text';
+        status.textContent = 'Encrypting...';
+        container.appendChild(status);
+    } else if (type === 'decrypt') {
+        const icon = document.createElement('div');
+        icon.className = 'lock-icon unlocking';
+        icon.textContent = '🔓';
+        container.appendChild(icon);
+
+        const status = document.createElement('div');
+        status.className = 'status-text';
+        status.textContent = 'Decrypting...';
+        container.appendChild(status);
+    } else if (type === 'hash') {
+        const hashes = document.createElement('div');
+        hashes.className = 'hash-icons';
+        for (let i = 0; i < 3; i++) {
+            const h = document.createElement('span');
+            h.className = 'hash-icon hashing';
+            h.textContent = '#';
+            if (i === 1) h.style.animationDelay = '0.2s';
+            if (i === 2) h.style.animationDelay = '0.4s';
+            hashes.appendChild(h);
+        }
+        container.appendChild(hashes);
+
+        const status = document.createElement('div');
+        status.className = 'status-text';
+        status.textContent = 'Hashing...';
+        container.appendChild(status);
+    }
+}
+
+function hideAnimation() {
+    const container = document.getElementById('animationContainer');
+    if (!container) return;
+    container.classList.add('hidden');
+    container.innerHTML = '';
 }
 
 // Initialize on page load
