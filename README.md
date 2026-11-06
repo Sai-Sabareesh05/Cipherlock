@@ -1,156 +1,65 @@
-# 🔐 Encryption & Hashing Tool
+# CipherLock
 
-A secure, client-side web application for encryption, decryption, and hashing operations. All processing happens in your browser - your data is never sent to any server.
+CipherLock is a local, dependency-free educational application that demonstrates how digital logic can power a cybersecurity workflow. It combines a repeating-key XOR message transformation, even-parity integrity checking, a simulated transmission channel, and an event monitor built from an 8:3 encoder and 3:8 decoder.
 
-## Features
+> **Important:** CipherLock is an academic demonstration, not production-grade encryption or authentication. Do not use it to protect real secrets.
 
-### 🔒 Encryption
-- **Algorithm**: AES-256 encryption
-- **Input**: Plain text and encryption key
-- **Output**: Base64-encoded encrypted data
-- **Key Strength Indicator**: Visual feedback on key security
+## What it demonstrates
 
-### 🔓 Decryption
-- **Algorithm**: AES-256 decryption
-- **Input**: Encrypted text (Base64) and decryption key
-- **Output**: Original plain text
-- **Error Handling**: Clear feedback for incorrect keys or invalid data
+- **XOR gate bank:** each byte is transformed by eight calls to `xorGate(a, b)`. Encryption and decryption use the same operation.
+- **2:1 multiplexer:** select signal `S=0` routes plaintext into the XOR bank; `S=1` routes ciphertext for recovery.
+- **1:2 demultiplexer:** routes the transformed byte to the ciphertext buffer or recovered-plaintext buffer.
+- **Even parity:** the parity bit is calculated by XOR-reducing all eight ciphertext bits. The receiver recalculates and compares it.
+- **8:3 encoder / 3:8 decoder:** one active security event is encoded into a three-bit value and decoded back into its event output.
+- **Execution trace:** the Live Logic Map consumes the same intermediate calculations used by the Message Lab. It is not a decorative animation.
 
-### 🔑 Hashing
-- **Algorithms Supported**:
-  - SHA-256 (recommended)
-  - SHA-512 (strongest)
-  - SHA-1 (legacy)
-  - MD5 (legacy, not recommended)
-- **Use Case**: Generate fixed-length hashes for data verification
-- **One-way**: Hashes cannot be reversed
+## Running locally
 
-## Security Features
+This is a static webpage. Open `index.html` in a current browser, or serve the folder with any static server:
 
-✅ **Client-side processing** - No data transmission to servers  
-✅ **AES-256 encryption** - Military-grade encryption standard  
-✅ **Key strength meter** - Visual indicator for password security  
-✅ **Multiple hash algorithms** - Choose the right algorithm for your needs  
-✅ **Copy to clipboard** - Easy data sharing with automatic notification  
-✅ **Error handling** - Clear messages for user guidance  
-✅ **Responsive design** - Works on desktop, tablet, and mobile  
-
-## How to Use
-
-### Encryption
-1. Navigate to the **Encrypt** tab
-2. Enter the text you want to encrypt
-3. Create a strong encryption key (minimum 8 characters)
-4. Click **Encrypt**
-5. Your encrypted text appears in Base64 format
-6. Click **Copy** to copy to clipboard
-
-### Decryption
-1. Navigate to the **Decrypt** tab
-2. Paste the encrypted text (Base64 format)
-3. Enter the same key used for encryption
-4. Click **Decrypt**
-5. Original text is revealed if the key is correct
-
-### Hashing
-1. Navigate to the **Hash** tab
-2. Enter text to hash
-3. Select your preferred hash algorithm (SHA-256 recommended)
-4. Click **Hash**
-5. Fixed-length hash appears in the output
-6. Click **Copy** to copy to clipboard
-
-## Key Strength Levels
-
-- **Weak** 🔴: Less than 8 characters or limited character variety
-- **Medium** 🟠: 8-12 characters with mixed case and numbers
-- **Strong** 🟢: 12+ characters with uppercase, lowercase, numbers, and special characters
-
-## Technical Stack
-
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Cryptography**: CryptoJS 4.1.0
-- **Browser Compatibility**: All modern browsers (Chrome, Firefox, Safari, Edge)
-- **No Dependencies**: Standalone static webpage
-
-## Installation
-
-1. Clone this repository
-2. Open `index.html` in your web browser
-3. No server or build process required!
-
-## File Structure
-
-```
-.
-├── index.html       # Main HTML structure
-├── styles.css       # Styling and responsive design
-├── script.js        # JavaScript functionality
-└── README.md        # This file
+```bash
+python -m http.server 8000
 ```
 
-## Browser Support
+Then visit `http://localhost:8000`.
 
-| Browser | Support |
-|---------|---------|
-| Chrome  | ✅ Latest |
-| Firefox | ✅ Latest |
-| Safari  | ✅ Latest |
-| Edge    | ✅ Latest |
-| IE 11   | ⚠️ Limited |
+No API keys, build process, external services, or data uploads are required. The Google Fonts import is optional; the application falls back to system fonts when offline.
 
-## Important Security Notes
+## Demonstration
 
-⚠️ **Disclaimer**: While this tool uses strong encryption algorithms, it should not be used for production security-critical applications without proper validation and security audits.
+1. In **Message Lab**, use plaintext `A` and key `0F`.
+2. Click **Run encryption**. The ciphertext is `4E`, binary `01001110`, and parity is `0`.
+3. Transfer the payload to the receiver.
+4. Click **Verify integrity**, then **Decrypt message** using the separately entered receiver key.
+5. Open **Live Logic Map** and use **Run simulation**, **Pause**, or **Next step** to inspect binary conversion, MUX selection, each of the eight XOR gates, DEMUX routing, and parity generation.
+6. Use **Flip one bit** and **Flip two bits** to demonstrate parity's detection and limitation behavior. Errors affect only the receiver's transmission copy.
 
-⚠️ **Remember Your Key**: There is no "forgot password" - if you lose your encryption key, your data cannot be recovered.
+## Validation and input handling
 
-⚠️ **Browser Security**: Keep your browser and system updated for optimal security.
+- Text is encoded as UTF-8 and limited to 512 bytes.
+- Ciphertext input must be complete hexadecimal bytes.
+- Receiver verification requires one parity bit per ciphertext byte.
+- A wrong receiver key produces a recovered output, but it does not authenticate the message.
+- Error injection never mutates the sender buffer.
+- Plaintext and keys exist only in the current page session.
 
-⚠️ **Private Network**: For maximum security, consider using this tool on a private/offline network.
+## Project structure
 
-## How It Works
+```
+index.html   # app layout and reference content
+styles.css   # responsive technical interface
+script.js    # Boolean logic engine, trace generation, state and UI
+```
 
-### Encryption Process
-1. User enters plaintext and encryption key
-2. CryptoJS uses AES-256 algorithm
-3. Encrypted data is returned in Base64 format
-4. Result is displayed and can be copied
+The logic functions are exposed as `window.CipherLock` for browser-console verification:
 
-### Decryption Process
-1. User enters Base64-encoded encrypted text and key
-2. CryptoJS decrypts using the provided key
-3. Original plaintext is returned
-4. Validation ensures key correctness
+```js
+CipherLock.xorGate(0, 1)                 // 1
+CipherLock.mux2to1("A", "B", 1)          // "B"
+CipherLock.demux1to2(1, 0)               // { y0: 1, y1: 0 }
+CipherLock.generateEvenParity(0b01001110) // 0
+```
 
-### Hashing Process
-1. User enters text to hash
-2. Selected algorithm processes the input
-3. Fixed-length hash is generated
-4. Cannot be reversed or decrypted
+## Limitations
 
-## Performance
-
-- Encryption/Decryption: < 100ms for typical text
-- Hashing: < 10ms for typical text
-- All operations happen instantly in your browser
-
-## Privacy
-
-Your data is:
-- ✅ Never sent to any server
-- ✅ Processed entirely on your device
-- ✅ Only stored in your browser while you're using it
-- ✅ Cleared when you close the page (unless copied)
-
-## License
-
-This project is provided as-is for educational and personal use.
-
-## Support
-
-For issues or suggestions, please visit the GitHub repository.
-
----
-
-**Happy Encrypting! 🔐**
+Repeating-key XOR is vulnerable to key reuse and provides no authenticity. A one-bit parity check detects odd numbers of flipped bits within a byte but can miss an even number of flips. The communication channel is simulated locally and is not a network protocol.

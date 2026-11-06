@@ -1,780 +1,173 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIPHER - Encryption Tool</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #e0e0e0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: #2a2a2a;
-            border: 3px solid #333;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-            position: relative;
-        }
-
-        /* Logo Section */
-        .logo-section {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: #ffcc00;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            font-weight: bold;
-            color: #d9534f;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
-            border: 2px solid #d9534f;
-        }
-
-        /* Embedded institution logo (added) */
-        #institution-logo {
-            width: 64px;
-            height: 64px;
-            object-fit: contain;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .developer-name {
-            font-size: 0.75em;
-            color: #00d4ff;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 5px;
-        }
-
-        /* Header Section */
-        .header {
-            background: linear-gradient(180deg, #1a1a1a 0%, #252525 100%);
-            padding: 30px;
-            text-align: center;
-            border-bottom: 3px solid #444;
-        }
-
-        .header-top {
-            margin-bottom: 20px;
-        }
-
-        .title {
-            font-size: 3em;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: #00d4ff;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            font-size: 0.9em;
-            letter-spacing: 3px;
-            color: #888;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .tagline {
-            font-size: 0.85em;
-            letter-spacing: 2px;
-            color: #d9534f;
-            text-transform: uppercase;
-        }
-
-        /* Yellow Banner */
-        .yellow-banner {
-            background: #ffcc00;
-            color: #000;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.9em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 2px solid #000;
-            margin-bottom: 20px;
-        }
-
-        /* Film Strip */
-        .film-strip {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px;
-            background: #1a1a1a;
-            border: 3px solid #444;
-            border-top: 3px solid #444;
-            border-bottom: 3px solid #444;
-            overflow-x: auto;
-        }
-
-        .film-frame {
-            flex: 1;
-            min-width: 180px;
-            text-align: center;
-            margin: 0 8px;
-        }
-
-        .frame-image {
-            width: 100%;
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, #444 0%, #555 50%, #444 100%);
-            border: 8px solid #000;
-            border-left: 12px solid #000;
-            border-right: 12px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00d4ff;
-            font-size: 1.2em;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .frame-image::before,
-        .frame-image::after {
-            content: '';
-            position: absolute;
-            background: repeating-linear-gradient(
-                90deg,
-                #000 0px,
-                #000 3px,
-                transparent 3px,
-                transparent 12px
-            );
-            height: 100%;
-            width: 12px;
-            top: 0;
-        }
-
-        .frame-image::before {
-            left: -12px;
-        }
-
-        .frame-image::after {
-            right: -12px;
-        }
-
-        .frame-label {
-            font-size: 0.75em;
-            color: #d9534f;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 30px;
-        }
-
-        /* Animation Container */
-        .animation-container {
-            text-align: center;
-            margin-bottom: 20px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .animation-container.hidden {
-            display: none;
-        }
-
-        /* Lock Animation */
-        .lock-icon {
-            font-size: 3em;
-            margin: 0 10px;
-        }
-
-        @keyframes lock {
-            0% {
-                transform: scale(1) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.1) rotate(-5deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-            }
-        }
-
-        @keyframes unlock {
-            0% {
-                transform: scale(1) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.1) rotate(5deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-            }
-        }
-
-        .lock-icon.locking {
-            animation: lock 0.6s ease-in-out infinite;
-            color: #ff6666;
-        }
-
-        .lock-icon.unlocking {
-            animation: unlock 0.6s ease-in-out infinite;
-            color: #00ff88;
-        }
-
-        /* Hash Blink Animation */
-        .hash-icons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .hash-icon {
-            font-size: 2em;
-            color: #00d4ff;
-        }
-
-        @keyframes blink {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        .hash-icon.hashing {
-            animation: blink 0.8s ease-in-out infinite;
-        }
-
-        .hash-icon.hashing:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .hash-icon.hashing:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        /* Status Text */
-        .status-text {
-            color: #00d4ff;
-            font-size: 0.9em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #444;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: #1a1a1a;
-            border: 2px solid #444;
-            color: #888;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-
-        .tab-btn:hover {
-            background: #333;
-            color: #00d4ff;
-            border-color: #00d4ff;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #000;
-            border-color: #00d4ff;
-            text-shadow: none;
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .tab-content h2 {
-            color: #00d4ff;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-        }
-
-        /* Form Groups */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #00d4ff;
-            font-weight: bold;
-            font-size: 0.9em;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .form-group textarea,
-        .form-group input[type="password"],
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background: #1a1a1a;
-            border: 2px solid #444;
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.95em;
-            transition: all 0.3s ease;
-            resize: vertical;
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-        }
-
-        .form-group input[type="password"],
-        .form-group select {
-            height: 45px;
-        }
-
-        .form-group textarea:focus,
-        .form-group input[type="password"]:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #00d4ff;
-            background: #222;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-
-        .form-group textarea:readonly {
-            background: #0a0a0a;
-            color: #00d4ff;
-            border-color: #333;
-        }
-
-        /* Key Strength */
-        .key-strength {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .strength-bar {
-            flex: 1;
-            height: 8px;
-            background: #444;
-            border: 1px solid #555;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .strength-bar::after {
-            content: '';
-            display: block;
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff4444, #ffaa00);
-            transition: width 0.3s ease, background 0.3s ease;
-        }
-
-        .strength-bar.weak::after {
-            width: 33%;
-            background: linear-gradient(90deg, #ff4444, #ff6666);
-        }
-
-        .strength-bar.medium::after {
-            width: 66%;
-            background: linear-gradient(90deg, #ffaa00, #ffcc00);
-        }
-
-        .strength-bar.strong::after {
-            width: 100%;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-        }
-
-        #strength-text {
-            font-size: 0.8em;
-            font-weight: bold;
-            color: #888;
-            min-width: 60px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Output Group */
-        .output-group {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #444;
-        }
-
-        /* Buttons */
-        .btn-primary,
-        .btn-secondary {
-            border: none;
-            padding: 12px 30px;
-            font-size: 0.9em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #000;
-            width: 100%;
-            margin-bottom: 20px;
-            border: 2px solid #00d4ff;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: linear-gradient(135deg, #00ffff 0%, #00ccff 100%);
-            box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-primary:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: #333;
-            color: #00d4ff;
-            border: 2px solid #444;
-            width: 100%;
-        }
-
-        .btn-secondary:hover {
-            background: #444;
-            border-color: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary:active {
-            transform: translateY(0);
-        }
-
-        /* Alert Messages */
-        .alert {
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 2px solid;
-            font-size: 0.9em;
-            letter-spacing: 1px;
-        }
-
-        .alert-success {
-            background: #1a3a1a;
-            color: #00ff88;
-            border-color: #00ff88;
-        }
-
-        .alert-error {
-            background: #3a1a1a;
-            color: #ff6666;
-            border-color: #ff6666;
-        }
-
-        .alert-warning {
-            background: #3a3a1a;
-            color: #ffcc00;
-            border-color: #ffcc00;
-        }
-
-        /* Footer */
-        .footer {
-            background: #1a1a1a;
-            padding: 20px;
-            text-align: center;
-            border-top: 3px solid #444;
-            font-size: 0.85em;
-            color: #888;
-            letter-spacing: 1px;
-        }
-
-        .footer p {
-            margin: 8px 0;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .logo-section {
-                top: 10px;
-                right: 10px;
-            }
-
-            .logo {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
-            }
-
-            .developer-name {
-                font-size: 0.65em;
-            }
-
-            .title {
-                font-size: 2em;
-                letter-spacing: 4px;
-            }
-
-            .subtitle {
-                font-size: 0.8em;
-            }
-
-            .film-strip {
-                flex-wrap: wrap;
-            }
-
-            .film-frame {
-                min-width: 150px;
-            }
-
-            .main-content {
-                padding: 15px;
-                margin-top: 80px;
-            }
-
-            .btn-primary,
-            .btn-secondary {
-                width: 100%;
-                margin-right: 0;
-            }
-
-            .tabs {
-                flex-direction: column;
-            }
-
-            .form-group textarea,
-            .form-group input,
-            .form-group select {
-                font-size: 16px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CipherLock educational digital-logic message protection and integrity monitor">
+  <title>CipherLock | Digital Logic Security Lab</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Logo Section -->
-        <div class="logo-section">
-            <div class="logo">🔐</div>
-            <!-- Embedded institution logo (added) -->
-            <img id="institution-logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUQEhIVFhUVFRUVFRUQFRUVFRUVFRUXFhUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGi0fHR0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAJ8BPgMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBAwQCB//EADwQAAIBAgQEAwYEBwAAAAAAAAECAwQRAAUSITFBUQYTImFxgZEykaGxwUJSscHR8RUjQ1Nz/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAECAwT/xAAjEQACAgICAgIDAQAAAAAAAAAAAQIRAxIhMUFREyJhcUJS/9oADAMBAAIRAxEAPwD7oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwZ0um3bqT7r7a3p3r2q2r1vZl2rU1c0k5Z0q1fVq1Zp1a1bV3VNe1c0k5Z0q1fVq1Zp1a1bV3VNe1c0k5Z0q1fVq1Zp1a1bV3VNe1c0k5Z0q1fVq1Zp1a1bV3VNf/2Q==" alt="Mata Amritanandamayi Math logo">
-            <div class="developer-name">Sai Sabareesh</div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" data-section="overview">
+        <span class="brand-mark">CL</span>
+        <span><strong>CIPHER<span>LOCK</span></strong><small>logic security lab</small></span>
+      </a>
+      <div class="sidebar-label">Workspace</div>
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-section="overview"><span>01</span>Overview</button>
+        <button class="nav-item" data-section="lab"><span>02</span>Message Lab</button>
+        <button class="nav-item" data-section="logic"><span>03</span>Live Logic Map</button>
+        <button class="nav-item" data-section="events"><span>04</span>Security Events</button>
+        <button class="nav-item" data-section="reference"><span>05</span>Logic Reference</button>
+        <button class="nav-item" data-section="about"><span>06</span>About CipherLock</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        <div><b>LOCAL SIMULATION</b><small>No network transport</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">CHSE / CYS EDUCATIONAL PLATFORM</div>
+          <h1 id="page-title">System overview</h1>
         </div>
+        <div class="topbar-status"><span class="pulse"></span><span id="top-status">READY</span><i>v1.0 / browser local</i></div>
+      </header>
 
-        <!-- Header -->
-        <div class="header">
-            <div class="header-top">
-                <h1 class="title">CIPHER</h1>
-                <p class="subtitle">ADVANCED ENCRYPTION TOOLKIT</p>
-                <p class="tagline">ENCRYPT • DECRYPT • HASH • ADVANCED SECURITY</p>
-            </div>
-            <div class="yellow-banner">ADVANCED CIPHER MODE</div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+      <section id="section-overview" class="page-section active">
+        <div class="hero">
+          <div>
+            <div class="eyebrow cyan">DIGITAL LOGIC / MESSAGE PROTECTION</div>
+            <h2>Make the circuit<br><em>do the security work.</em></h2>
+            <p>CipherLock is an inspectable XOR message-protection lab. Every binary value, parity bit and event code is calculated by real Boolean logic in your browser.</p>
+            <button class="button primary" data-section="lab">Open message lab <b>-></b></button>
+          </div>
+          <div class="hero-circuit" aria-label="Logic circuit status">
+            <div class="hero-node active">INPUT<span>01000001</span></div><b class="wire">--</b><div class="hero-node">XOR<span>01001110</span></div><b class="wire">--</b><div class="hero-node success">OUTPUT<span>4E</span></div>
+            <div class="hero-caption">LIVE SIGNAL PATH <span>●</span> SELECTED</div>
+          </div>
         </div>
-
-        <!-- Film Strip Design -->
-        <div class="film-strip">
-            <div class="film-frame frame-1">
-                <div class="frame-image" id="frame1">
-                    <span>ENCRYPT</span>
-                </div>
-                <p class="frame-label">STEP 1 - ENTER TEXT</p>
-            </div>
-            <div class="film-frame frame-2">
-                <div class="frame-image" id="frame2">
-                    <span>KEY</span>
-                </div>
-                <p class="frame-label">STEP 2 - SET PASSWORD</p>
-            </div>
-            <div class="film-frame frame-3">
-                <div class="frame-image" id="frame3">
-                    <span>CIPHER</span>
-                </div>
-                <p class="frame-label">STEP 3 - GENERATE CIPHER</p>
-            </div>
-            <div class="film-frame frame-4">
-                <div class="frame-image" id="frame4">
-                    <span>DECRYPT</span>
-                </div>
-                <p class="frame-label">STEP 4 - DECODE MESSAGE</p>
-            </div>
+        <div class="metric-grid">
+          <article class="metric-card"><span class="metric-icon cyan-bg">BY</span><small>TOTAL BYTES PROCESSED</small><strong id="metric-bytes">0</strong><em>local session</em></article>
+          <article class="metric-card"><span class="metric-icon purple-bg">EN</span><small>ENCRYPTION OPERATIONS</small><strong id="metric-encryptions">0</strong><em>transformations</em></article>
+          <article class="metric-card"><span class="metric-icon blue-bg">DE</span><small>DECRYPTION OPERATIONS</small><strong id="metric-decryptions">0</strong><em>reversals</em></article>
+          <article class="metric-card"><span class="metric-icon green-bg">OK</span><small>INTEGRITY PASSED</small><strong id="metric-passed">0</strong><em class="positive">verified parity</em></article>
+          <article class="metric-card"><span class="metric-icon red-bg">!!</span><small>INTEGRITY FAILED</small><strong id="metric-failed">0</strong><em class="negative">detected errors</em></article>
         </div>
+        <div class="overview-grid">
+          <article class="panel activity-panel">
+            <div class="panel-head"><div><div class="eyebrow">RECENT ACTIVITY</div><h3>Security event stream</h3></div><button class="text-button" data-section="events">View all -></button></div>
+            <div id="recent-events" class="event-list compact"></div>
+          </article>
+          <article class="panel quick-panel">
+            <div class="eyebrow">PROCESSING STATUS</div><h3 id="overview-state">Ready for input</h3>
+            <div class="state-line"><span class="state-key">LAST EVENT</span><b id="overview-last-event">No events recorded</b></div>
+            <div class="state-line"><span class="state-key">ACTIVE STAGE</span><b id="overview-stage">Idle</b></div>
+            <div class="mini-path"><span class="done">INPUT</span><i></i><span id="path-logic">LOGIC</span><i></i><span id="path-output">OUTPUT</span></div>
+            <button class="button secondary full" data-section="logic">Inspect live logic map</button>
+          </article>
+        </div>
+      </section>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Animation Container -->
-            <div id="animationContainer" class="animation-container hidden"></div>
-
-            <!-- Tab Navigation -->
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('encrypt', this)">🔒 ENCRYPT</button>
-                <button class="tab-btn" onclick="switchTab('decrypt', this)">🔓 DECRYPT</button>
-                <button class="tab-btn" onclick="switchTab('hash', this)">🔑 HASH</button>
+      <section id="section-lab" class="page-section">
+        <div class="section-intro"><div><div class="eyebrow cyan">02 / MESSAGE PROTECTION WORKSPACE</div><h2>Message lab</h2><p>Encrypt locally, transfer through a controlled channel, then verify and recover the message with the shared demonstration key.</p></div><div class="notice warning"><b>EDUCATIONAL XOR ONLY</b><span>Not production-grade cryptography. Do not use for sensitive data.</span></div></div>
+        <div class="lab-grid">
+          <article class="panel lab-panel sender">
+            <div class="panel-head"><div><span class="panel-number">A</span><div class="eyebrow">SENDER NODE</div><h3>Protect a message</h3></div><span class="node-status">LOCAL</span></div>
+            <label for="plaintext">Plaintext input <span>UTF-8 / max 512 bytes</span></label>
+            <textarea id="plaintext" maxlength="512" placeholder="Type a message to pass through the logic engine...">A</textarea>
+            <label for="sender-key">Demonstration key <span>hex bytes or UTF-8, repeated as needed</span></label>
+            <input id="sender-key" value="0F" autocomplete="off" placeholder="e.g. 0F or shared-key">
+            <div class="key-hint">Try plaintext <b>A</b> with key <b>0F</b> for the reference result <b>4E</b>.</div>
+            <button id="encrypt-btn" class="button primary full">Run encryption <b>-></b></button>
+            <div class="output-block"><div class="output-label">CIPHERTEXT / HEX <button data-copy="ciphertextHex">Copy</button></div><output id="ciphertextHex">--</output></div>
+            <div class="output-block"><div class="output-label">CIPHERTEXT / BINARY</div><output id="ciphertextBinary">--</output></div>
+            <div class="output-block"><div class="output-label">GENERATED PARITY BITS <span>even parity</span></div><output id="senderParity">--</output></div>
+            <button id="transfer-btn" class="button secondary full" disabled>Transfer to receiver <b>~></b></button>
+          </article>
+          <article class="panel lab-panel receiver">
+            <div class="panel-head"><div><span class="panel-number">B</span><div class="eyebrow">RECEIVER NODE</div><h3>Verify and recover</h3></div><span class="node-status">WAITING</span></div>
+            <label for="incomingCiphertext">Incoming ciphertext <span>hexadecimal bytes</span></label>
+            <textarea id="incomingCiphertext" class="mono-area" placeholder="Transfer data or enter hex manually..."></textarea>
+            <label for="receivedParity">Received parity metadata <span>one bit per byte</span></label>
+            <input id="receivedParity" class="mono-input" placeholder="e.g. 0 1 0">
+            <label for="receiver-key">Receiver key <span>entered separately / hex or UTF-8</span></label>
+            <input id="receiver-key" value="0F" autocomplete="off" placeholder="Enter the shared key">
+            <div class="transfer-controls">
+              <button id="flip-one-btn" class="tiny-button">Flip one bit</button><button id="flip-two-btn" class="tiny-button">Flip two bits</button><button id="clear-error-btn" class="tiny-button">Clear errors</button>
             </div>
+            <div id="channel-note" class="channel-note">Channel is idle. Transfer ciphertext to begin.</div>
+            <div class="receiver-actions"><button id="verify-btn" class="button secondary">Verify integrity</button><button id="decrypt-btn" class="button primary">Decrypt message</button></div>
+            <div id="integrity-status" class="integrity-card neutral"><span class="signal-symbol">?</span><div><b>Integrity not checked</b><small>Parity metadata is required before verification.</small></div></div>
+            <div class="output-block"><div class="output-label">RECOVERED PLAINTEXT <span id="recovery-warning"></span></div><output id="recoveredText">--</output></div>
+          </article>
+        </div>
+        <div class="lab-foot"><span>TRANSFER CHANNEL</span><i></i><b id="transfer-state">No payload in transit</b><span class="legend-dot green"></span> Original data is never modified by error simulation.</div>
+      </section>
 
-            <!-- Encrypt Tab -->
-            <section id="encrypt" class="tab-content active">
-                <h2>ENCRYPTION MODULE</h2>
-                
-                <div class="form-group">
-                    <label for="plaintext">MESSAGE TO ENCRYPT:</label>
-                    <textarea id="plaintext" placeholder="Enter your secret message here..."></textarea>
-                </div>
+      <section id="section-logic" class="page-section">
+        <div class="section-intro"><div><div class="eyebrow cyan">03 / EXECUTION TRACE</div><h2>Live logic map</h2><p>Inspect the selected byte as it moves through the actual MUX, XOR gate bank, DEMUX and parity stages.</p></div><div class="trace-controls"><button id="run-btn" class="button primary">Run simulation</button><button id="pause-btn" class="button secondary">Pause</button><button id="step-btn" class="button secondary">Next step</button><button id="reset-btn" class="button ghost">Reset</button></div></div>
+        <div class="trace-toolbar panel"><div><span class="toolbar-label">CURRENT STAGE</span><b id="trace-stage">Idle</b></div><div><span class="toolbar-label">BYTE INDEX</span><b id="trace-byte">--</b></div><div><span class="toolbar-label">BIT INDEX</span><b id="trace-bit">--</b></div><label>Speed <select id="trace-speed"><option value="800">Slow</option><option value="350" selected>Normal</option><option value="100">Fast</option></select></label><div class="trace-progress"><span id="trace-progress-bar"></span></div></div>
+        <div class="logic-map panel">
+          <div class="circuit-row">
+            <button class="circuit-node selected" data-inspect="input"><span class="node-tag">01</span><b>USER INPUT</b><output id="map-input">01000001</output><small>UTF-8 byte source</small></button><span class="connector"><i></i></span>
+            <button class="circuit-node" data-inspect="binary"><span class="node-tag">02</span><b>BINARY CONVERSION</b><output id="map-binary">01000001</output><small>8-bit array</small></button><span class="connector"><i></i></span>
+            <button class="circuit-node" data-inspect="mux"><span class="node-tag">03</span><b>2:1 MUX</b><output id="map-mux">A selected</output><small>S = <span id="map-mux-s">0</span></small></button><span class="connector"><i></i></span>
+            <button class="circuit-node xor-node" data-inspect="xor"><span class="node-tag">04</span><b>XOR GATE BANK</b><output id="map-xor">01001110</output><small>8 Boolean gates</small></button><span class="connector"><i></i></span>
+            <button class="circuit-node" data-inspect="demux"><span class="node-tag">05</span><b>1:2 DEMUX</b><output id="map-demux">Y0 active</output><small>S = <span id="map-demux-s">0</span></small></button><span class="connector"><i></i></span>
+            <button class="circuit-node" data-inspect="output"><span class="node-tag">06</span><b>OUTPUT BUFFER</b><output id="map-output">4E</output><small>ciphertext byte</small></button>
+          </div>
+          <div class="gate-detail">
+            <div class="gate-heading"><div><div class="eyebrow">SELECTED BYTE / XOR BANK</div><h3>Eight actual XOR operations</h3></div><div class="byte-switcher"><button id="prev-byte">&lt;</button><b id="selected-byte-label">Byte 0 / 1</b><button id="next-byte">></button></div></div>
+            <div class="gate-equation"><span id="gate-a">01000001</span><b>XOR</b><span id="gate-b">00001111</span><b>=</b><span class="equation-result" id="gate-y">01001110</span></div>
+            <div id="gate-bank" class="gate-bank"></div>
+          </div>
+          <div class="integrity-branch">
+            <span class="branch-label">INTEGRITY BRANCH</span><div class="branch-wire"></div>
+            <div class="branch-node"><b>PARITY GENERATOR</b><output id="map-parity-gen">0</output><small>8-bit XOR reduction</small></div><div class="branch-wire"></div>
+            <div class="branch-node"><b>SIMULATED CHANNEL</b><output id="map-channel">CLEAN</output><small>transmission copy</small></div><div class="branch-wire"></div>
+            <div class="branch-node"><b>PARITY CHECKER</b><output id="map-parity-check">--</output><small>compare received</small></div><div class="branch-wire"></div>
+            <div class="branch-node" id="map-integrity-node"><b>INTEGRITY STATUS</b><output id="map-integrity">WAITING</output><small>event generated</small></div>
+          </div>
+        </div>
+        <div class="logic-bottom-grid">
+          <article class="panel event-circuit"><div class="panel-head"><div><div class="eyebrow">SECURITY EVENT CIRCUIT</div><h3>8:3 encoder -> 3:8 decoder</h3></div><span id="event-code-badge" class="code-badge">---</span></div><div class="encoder-layout"><div id="encoder-inputs" class="encoder-inputs"></div><div class="encoder-chip"><b>ENCODER</b><span>8:3</span><output id="encoder-output">---</output></div><div class="decoder-chip"><b>DECODER</b><span>3:8</span><output id="decoder-input">---</output></div><div id="decoder-outputs" class="decoder-outputs"></div></div><div class="event-decoded"><span>DECODED EVENT</span><b id="decoded-event">Idle</b></div></article>
+          <aside id="inspector" class="panel inspector"><div class="eyebrow">COMPONENT INSPECTOR</div><h3 id="inspector-title">Select a circuit component</h3><p id="inspector-purpose">Click any component in the live map to inspect its current signals, Boolean expression and truth table.</p><div id="inspector-content" class="inspector-content"></div></aside>
+        </div>
+        <div class="legend panel"><b>SIGNAL LEGEND</b><span><i class="legend-dot gray"></i> Logic 0 / inactive</span><span><i class="legend-dot cyan"></i> Logic 1 / active</span><span><i class="legend-dot purple"></i> Currently processing</span><span><i class="legend-dot orange"></i> Selected path</span><span><i class="legend-dot red"></i> Failed verification</span></div>
+      </section>
 
-                <div class="form-group">
-                    <label for="encrypt-password">ENCRYPTION KEY:</label>
-                    <input type="password" id="encrypt-password" placeholder="Enter encryption key (8+ characters)" oninput="updateKeyStrength('encrypt-password')">
-                    <div class="key-strength">
-                        <div class="strength-bar" id="strength-bar"></div>
-                        <span id="strength-text">WEAK</span>
-                    </div>
-                </div>
+      <section id="section-events" class="page-section">
+        <div class="section-intro"><div><div class="eyebrow cyan">04 / SECURITY EVENT MONITOR</div><h2>Event stream</h2><p>The encoder and decoder process one real application event at a time. Codes below are derived from the active one-hot input.</p></div><button id="clear-events" class="button ghost">Clear event history</button></div>
+        <div class="events-summary"><div class="summary-chip"><b id="event-count">0</b><span>TOTAL EVENTS</span></div><div class="summary-chip success-text"><b id="event-success-count">0</b><span>SUCCESS SIGNALS</span></div><div class="summary-chip danger-text"><b id="event-failure-count">0</b><span>WARNING SIGNALS</span></div></div>
+        <article class="panel full-events"><div class="event-table-head"><span>EVENT</span><span>TIME</span><span>ENCODED</span><span>DECODED OUTPUT</span><span>STATUS</span></div><div id="event-table" class="event-table"></div></article>
+      </section>
 
-                <button class="btn-primary" id="encryptBtn" onclick="encryptMessage()">ENCRYPT MESSAGE</button>
+      <section id="section-reference" class="page-section">
+        <div class="section-intro"><div><div class="eyebrow cyan">05 / DIGITAL LOGIC REFERENCE</div><h2>Logic reference</h2><p>Use this reference to connect each CHSE circuit to the message-protection workflow.</p></div></div>
+        <div class="reference-grid">
+          <article class="reference-card"><div class="ref-head"><span class="logic-symbol">⊕</span><div><div class="eyebrow">TRANSFORMATION ENGINE</div><h3>XOR gate</h3></div></div><p>Outputs 1 only when inputs differ. CipherLock applies eight Boolean XOR gates to every byte.</p><div class="truth-table"><span>A</span><span>B</span><span>Y = A XOR B</span><b>0</b><b>0</b><b>0</b><b>0</b><b>1</b><b>1</b><b>1</b><b>0</b><b>1</b><b>1</b><b>1</b><b>0</b></div><code>Y = (A AND NOT B) OR (NOT A AND B)</code></article>
+          <article class="reference-card"><div class="ref-head"><span class="logic-symbol">MUX</span><div><div class="eyebrow">INPUT SELECTION</div><h3>2:1 multiplexer</h3></div></div><p>Selects the plaintext for encryption or ciphertext for decryption before the shared XOR bank.</p><div class="truth-table compact-table"><span>S</span><span>Output</span><b>0</b><b>A</b><b>1</b><b>B</b></div><code>Y = (NOT S AND A) OR (S AND B)</code></article>
+          <article class="reference-card"><div class="ref-head"><span class="logic-symbol">DMX</span><div><div class="eyebrow">OUTPUT ROUTING</div><h3>1:2 demultiplexer</h3></div></div><p>Routes the transformed bit to the ciphertext buffer during encryption or recovered plaintext during decryption.</p><div class="truth-table compact-table"><span>S</span><span>Y0</span><span>Y1</span><b>0</b><b>D</b><b>0</b><b>1</b><b>0</b><b>D</b></div><code>Y0 = D AND NOT S / Y1 = D AND S</code></article>
+          <article class="reference-card"><div class="ref-head"><span class="logic-symbol">8:3</span><div><div class="eyebrow">EVENT ENCODING</div><h3>Encoder and decoder</h3></div></div><p>One active event input is encoded into a three-bit code, then decoded back to one active output.</p><div class="mapping-list"><span>I0 / O0</span><span>000</span><span>I1 / O1</span><span>001</span><span>I2 / O2</span><span>010</span><span>I3 / O3</span><span>011</span><span>I4 / O4</span><span>100</span><span>I5 / O5</span><span>101</span><span>I6 / O6</span><span>110</span><span>I7 / O7</span><span>111</span></div></article>
+          <article class="reference-card wide"><div class="ref-head"><span class="logic-symbol">P</span><div><div class="eyebrow">INTEGRITY CHECK</div><h3>Even parity generator and checker</h3></div></div><p>The parity bit is the XOR reduction of all eight ciphertext bits. A matching transmitted and recalculated bit indicates that no odd number of bit changes was detected in that byte.</p><div class="parity-demo"><code>P = b7 XOR b6 XOR b5 XOR b4 XOR b3 XOR b2 XOR b1 XOR b0</code><span>Limit: two flipped bits can cancel and pass simple parity. Parity detects accidental changes; it does not authenticate a sender or provide cryptographic security.</span></div></article>
+        </div>
+      </section>
 
-                <div class="form-group output-group">
-                    <label for="ciphertext">ENCRYPTED OUTPUT:</label>
-                    <textarea id="ciphertext" readonly placeholder="Your encrypted message will appear here..."></textarea>
-                    <button class="btn-secondary" onclick="copyToClipboard('ciphertext')">COPY CIPHER</button>
-                </div>
-            </section>
+      <section id="section-about" class="page-section">
+        <div class="about-hero"><div class="eyebrow cyan">06 / PROJECT NOTES</div><h2>Security is a process,<br><em>not a decoration.</em></h2><p>CipherLock makes the relationship between computer hardware fundamentals and cybersecurity visible. The interface is only a window into the actual Boolean operations underneath.</p></div>
+        <div class="about-grid"><article class="panel"><div class="eyebrow">CHSE FOUNDATION</div><h3>Hardware concepts</h3><p>XOR gates transform the data. A multiplexer selects the direction of the shared processing engine. A demultiplexer routes the output. The encoder and decoder convert security events into signals that can be monitored.</p></article><article class="panel"><div class="eyebrow">CYS CONTEXT</div><h3>Security concepts</h3><p>The application demonstrates confidentiality concepts through a repeating-key XOR, integrity monitoring through parity, and event observability through a one-hot security event circuit.</p></article><article class="panel"><div class="eyebrow">LIMITATION</div><h3>Know what this is not</h3><p>This is an academic circuit demonstration. Repeating-key XOR and parity are not modern encryption or authentication. Never use CipherLock to protect real secrets.</p></article></div>
+      </section>
 
-            <!-- Decrypt Tab -->
-            <section id="decrypt" class="tab-content">
-                <h2>DECRYPTION MODULE</h2>
-                
-                <div class="form-group">
-                    <label for="encrypted-message">ENCRYPTED MESSAGE:</label>
-                    <textarea id="encrypted-message" placeholder="Paste your encrypted message here..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="decrypt-password">DECRYPTION KEY:</label>
-                    <input type="password" id="decrypt-password" placeholder="Enter the same encryption key">
-                </div>
-
-                <button class="btn-primary" id="decryptBtn" onclick="decryptMessage()">DECRYPT MESSAGE</button>
-
-                <div class="form-group output-group">
-                    <label for="decrypted-message">DECRYPTED OUTPUT:</label>
-                    <textarea id="decrypted-message" readonly placeholder="Your decrypted message will appear here..."></textarea>
-                    <button class="btn-secondary" onclick="copyToClipboard('decrypted-message')">COPY MESSAGE</button>
-                </div>
-            </section>
-
-            <!-- Hash Tab -->
-            <section id="hash" class="tab-content">
-                <h2>HASHING MODULE</h2>
-                
-                <div class="form-group">
-                    <label for="hash-text">TEXT TO HASH:</label>
-                    <textarea id="hash-text" placeholder="Enter text to generate hash..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="hash-algorithm">HASH ALGORITHM:</label>
-                    <select id="hash-algorithm">
-                        <option value="SHA256">SHA-256 (Recommended)</option>
-                        <option value="SHA512">SHA-512</option>
-                        <option value="SHA1">SHA-1</option>
-                        <option value="MD5">MD5</option>
-                    </select>
-                </div>
-
-                <button class="btn-primary" id="hashBtn" onclick="hashText()">GENERATE HASH</button>
-
-                <div class="form-group output-group">
-                    <label for="hash-output">HASH OUTPUT:</label>
-                    <textarea id="hash-output" readonly placeholder="Your hash will appear here..."></textarea>
-                    <button class="btn-secondary" onclick="copyToClipboard('hash-output')">COPY HASH</button>
-                </div>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>🔐 All encryption happens locally • Your data never leaves your device</p>
-            <p>⚠️ This is a demonstration tool • Not for production security-critical applications</p>
-        </footer>
-    </div>
-
-    <script src="script.js"></script>
+      <footer class="footer"><span>CIPHERLOCK / DIGITAL LOGIC SECURITY LAB</span><span>100% local processing <i class="status-dot"></i></span></footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
